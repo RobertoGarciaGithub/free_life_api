@@ -1,8 +1,97 @@
-# Omakase Ruby styling for Rails
-inherit_gem: { rubocop-rails-omakase: rubocop.yml }
+inherit_from: .rubocop_todo.yml
 
-# Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+plugins:
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-performance
+  - rubocop-factory_bot
+  - rubocop-rake
+
+AllCops:
+  TargetRubyVersion: 4.0.0
+  NewCops: enable
+  Exclude:
+    - 'db/queue_schema.rb'
+    - 'db/cache_schema.rb'
+    - 'db/cable_schema.rb'
+    - 'db/schema.rb'
+    - 'db/data_schema.rb'
+    - 'db/data/*.rb'
+    - 'db/migrate/*.rb'
+    - 'db/seeds.rb'
+    - 'config/**/*.rb'
+    - 'node_modules/**/*'
+    - 'bin/**/*'
+    - 'vendor/**/*'
+    - 'tmp/**/*'
+    - 'log/**/*'
+
+Layout/LineLength:
+  Max: 100
+
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: false
+
+
+Metrics/MethodLength:
+  Max: 20
+
+Metrics/BlockLength:
+  Max: 30
+  Exclude:
+    - 'spec/**/*'
+    - 'Rakefile'
+    - '**/*.rake'
+
+Metrics/AbcSize:
+  Max: 25
+
+
+Naming/VariableNumber:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Rails:
+  Enabled: true
+
+Rails/UnknownEnv:
+  Enabled: true
+  Environments:
+    - development
+    - test
+    - production
+    - staging
+
+RSpec:
+  Enabled: true
+
+RSpec/NestedGroups:
+  Max: 4
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 5
+
+RSpec/ContextWording:
+  Enabled: true
+  Prefixes:
+    - when
+    - with
+    - without
+    - and
+
+Performance:
+  Enabled: true
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Lint:
+  Enabled: true
