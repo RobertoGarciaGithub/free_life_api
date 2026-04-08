@@ -1,6 +1,8 @@
 class Category < ApplicationRecord
   enum :category_type, { expense: 0, income: 1 }
 
+  has_many :transactions, dependent: :nullify
+
   belongs_to :account
 
   monetize :budget_cents
