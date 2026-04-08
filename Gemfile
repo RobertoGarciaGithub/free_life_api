@@ -22,6 +22,7 @@ group :development, :test do
   gem 'rspec-rails'
 
   gem 'debug', platforms: %i[mri windows], require: 'debug/prelude'
+  gem 'shoulda-matchers'
 
   gem 'brakeman', require: false
   gem 'bundler-audit', require: false
