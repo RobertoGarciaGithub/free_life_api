@@ -6,10 +6,10 @@ gem 'puma', '>= 5.0'
 gem 'rails', '~> 8.1.3'
 gem 'tzinfo-data', platforms: %i[windows jruby]
 
+gem 'bootsnap', require: false
 gem 'solid_cable'
 gem 'solid_cache'
 gem 'solid_queue'
-gem 'bootsnap', require: false
 
 gem 'kamal', require: false
 gem 'thruster', require: false

@@ -10,21 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_07_223515) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_08_135622) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
 
-  create_table "accounts", force: :cascade do |t|
-    t.string "account_number"
-    t.string "account_type", default: "checking", null: false
-    t.decimal "balance", precision: 15, scale: 2, default: "0.0", null: false
-    t.string "bank_name"
+  create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "accountable_id", null: false
+    t.string "accountable_type", null: false
+    t.integer "amount_cents", default: 0, null: false
+    t.string "amount_currency", default: "BRL", null: false
+    t.uuid "bank_id", null: false
     t.datetime "created_at", null: false
-    t.string "currency", default: "BRL", null: false
-    t.string "name", null: false
+    t.integer "profitability", null: false
     t.datetime "updated_at", null: false
-    t.index ["account_type"], name: "index_accounts_on_account_type"
+    t.index ["accountable_type", "accountable_id"], name: "index_accounts_on_accountable"
+    t.index ["bank_id"], name: "index_accounts_on_bank_id"
   end
 
   create_table "banks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -35,22 +36,33 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_223515) do
     t.index ["code"], name: "index_banks_on_code", unique: true
   end
 
-  create_table "transactions", force: :cascade do |t|
-    t.bigint "account_id", null: false
-    t.decimal "amount", precision: 15, scale: 2, null: false
-    t.string "category"
+  create_table "enterprises", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "cnpj", null: false
     t.datetime "created_at", null: false
-    t.date "date", null: false
-    t.string "description"
-    t.string "fit_id"
-    t.string "memo"
-    t.string "transaction_type", null: false
+    t.string "legal_name", null: false
+    t.uuid "owner_id", null: false
+    t.string "trade_name"
     t.datetime "updated_at", null: false
-    t.index ["account_id", "fit_id"], name: "index_transactions_on_account_id_and_fit_id", unique: true, where: "(fit_id IS NOT NULL)"
-    t.index ["account_id"], name: "index_transactions_on_account_id"
-    t.index ["date"], name: "index_transactions_on_date"
-    t.index ["fit_id"], name: "index_transactions_on_fit_id"
-    t.index ["transaction_type"], name: "index_transactions_on_transaction_type"
+    t.index ["cnpj"], name: "index_enterprises_on_cnpj", unique: true
+    t.index ["owner_id"], name: "index_enterprises_on_owner_id"
+  end
+
+  create_table "transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "amount_cents", default: 0, null: false
+    t.string "amount_currency", default: "BRL", null: false
+    t.datetime "created_at", null: false
+    t.string "description", null: false
+    t.integer "status", default: 0, null: false
+    t.uuid "target_id"
+    t.string "target_type"
+    t.uuid "transactable_id", null: false
+    t.string "transactable_type", null: false
+    t.integer "transactions_type", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
+    t.index ["target_type", "target_id"], name: "index_transactions_on_target"
+    t.index ["transactable_type", "transactable_id"], name: "index_transactions_on_transactable"
+    t.index ["user_id"], name: "index_transactions_on_user_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -64,5 +76,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_223515) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
-  add_foreign_key "transactions", "accounts"
+  add_foreign_key "accounts", "banks"
+  add_foreign_key "enterprises", "users", column: "owner_id"
+  add_foreign_key "transactions", "users"
 end
