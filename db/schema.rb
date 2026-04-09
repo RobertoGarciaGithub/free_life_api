@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_08_191736) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_09_184803) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -62,8 +62,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_08_191736) do
   create_table "transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "amount_cents", default: 0, null: false
     t.string "amount_currency", default: "BRL", null: false
+    t.uuid "category_id"
     t.datetime "created_at", null: false
     t.string "description", null: false
+    t.string "fitid"
     t.integer "status", default: 0, null: false
     t.uuid "target_id"
     t.string "target_type"
@@ -72,6 +74,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_08_191736) do
     t.integer "transactions_type", default: 0, null: false
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
+    t.index ["category_id"], name: "index_transactions_on_category_id"
+    t.index ["fitid"], name: "index_transactions_on_fitid", unique: true
     t.index ["target_type", "target_id"], name: "index_transactions_on_target"
     t.index ["transactable_type", "transactable_id"], name: "index_transactions_on_transactable"
     t.index ["user_id"], name: "index_transactions_on_user_id"
@@ -91,5 +95,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_08_191736) do
   add_foreign_key "accounts", "banks"
   add_foreign_key "categories", "accounts"
   add_foreign_key "enterprises", "users", column: "owner_id"
+  add_foreign_key "transactions", "categories"
   add_foreign_key "transactions", "users"
 end

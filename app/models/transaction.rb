@@ -12,4 +12,5 @@ class Transaction < ApplicationRecord
   validates :description, presence: true
   validates :transactions_type, presence: true
   validates :status, presence: true
+  validates :fitid, presence: true, uniqueness: true
 end
