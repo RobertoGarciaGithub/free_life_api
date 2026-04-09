@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       resources :transactions
       resources :enterprises
       resources :categories
+      resources :ofx, only: [:create]
     end
   end
 end

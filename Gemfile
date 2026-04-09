@@ -7,6 +7,8 @@ gem 'rails', '~> 8.1.3'
 gem 'tzinfo-data', platforms: %i[windows jruby]
 
 gem 'bootsnap', require: false
+gem 'nkf'
+gem 'ofx', '~> 0.3.8'
 gem 'solid_cable'
 gem 'solid_cache'
 gem 'solid_queue'
