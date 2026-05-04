@@ -1,11 +1,15 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'Api::V1::AccountsController', type: :request do
+  include_context 'with authenticated user'
+
   describe 'GET /api/v1/accounts' do
     context 'when there are records' do
       before do
         create(:account)
-        get '/api/v1/accounts'
+        get '/api/v1/accounts', headers: auth_headers
       end
 
       it { expect(response).to have_http_status(:ok) }
@@ -13,7 +17,7 @@ RSpec.describe 'Api::V1::AccountsController', type: :request do
     end
 
     context 'when there are no records' do
-      before { get '/api/v1/accounts' }
+      before { get '/api/v1/accounts', headers: auth_headers }
 
       it { expect(response).to have_http_status(:ok) }
       it { expect(response.parsed_body).to be_empty }
@@ -24,14 +28,14 @@ RSpec.describe 'Api::V1::AccountsController', type: :request do
     context 'when the account exists' do
       let!(:account) { create(:account) }
 
-      before { get "/api/v1/accounts/#{account.id}" }
+      before { get "/api/v1/accounts/#{account.id}", headers: auth_headers }
 
       it { expect(response).to have_http_status(:ok) }
       it { expect(response.parsed_body).to have_key('id') }
     end
 
     context 'when the account does not exist' do
-      before { get '/api/v1/accounts/00000000-0000-0000-0000-000000000000' }
+      before { get '/api/v1/accounts/00000000-0000-0000-0000-000000000000', headers: auth_headers }
 
       it { expect(response).to have_http_status(:not_found) }
       it { expect(response.parsed_body).to have_key('error') }
@@ -47,7 +51,7 @@ RSpec.describe 'Api::V1::AccountsController', type: :request do
                      accountable_id: user.id } }
       end
 
-      before { post '/api/v1/accounts', params: params, as: :json }
+      before { post '/api/v1/accounts', params: params, headers: auth_headers, as: :json }
 
       it { expect(response).to have_http_status(:created) }
       it { expect(response.parsed_body).to have_key('id') }
@@ -61,7 +65,7 @@ RSpec.describe 'Api::V1::AccountsController', type: :request do
                      accountable_id: user.id } }
       end
 
-      before { post '/api/v1/accounts', params: params, as: :json }
+      before { post '/api/v1/accounts', params: params, headers: auth_headers, as: :json }
 
       it { expect(response).to have_http_status(:unprocessable_content) }
       it { expect(response.parsed_body).to have_key('errors') }
@@ -73,7 +77,7 @@ RSpec.describe 'Api::V1::AccountsController', type: :request do
       let!(:account) { create(:account) }
       let(:params) { { account: { profitability: 10 } } }
 
-      before { patch "/api/v1/accounts/#{account.id}", params: params, as: :json }
+      before { patch "/api/v1/accounts/#{account.id}", params: params, headers: auth_headers, as: :json }
 
       it { expect(response).to have_http_status(:ok) }
       it { expect(response.parsed_body['profitability']).to eq(10) }
@@ -83,7 +87,7 @@ RSpec.describe 'Api::V1::AccountsController', type: :request do
       let!(:account) { create(:account) }
       let(:params) { { account: { profitability: nil } } }
 
-      before { patch "/api/v1/accounts/#{account.id}", params: params, as: :json }
+      before { patch "/api/v1/accounts/#{account.id}", params: params, headers: auth_headers, as: :json }
 
       it { expect(response).to have_http_status(:unprocessable_content) }
       it { expect(response.parsed_body).to have_key('errors') }
@@ -93,7 +97,8 @@ RSpec.describe 'Api::V1::AccountsController', type: :request do
       let(:params) { { account: { profitability: 10 } } }
 
       before do
-        patch '/api/v1/accounts/00000000-0000-0000-0000-000000000000', params: params, as: :json
+        patch '/api/v1/accounts/00000000-0000-0000-0000-000000000000',
+              params: params, headers: auth_headers, as: :json
       end
 
       it { expect(response).to have_http_status(:not_found) }
@@ -105,13 +110,13 @@ RSpec.describe 'Api::V1::AccountsController', type: :request do
     context 'when the account exists' do
       let!(:account) { create(:account) }
 
-      before { delete "/api/v1/accounts/#{account.id}" }
+      before { delete "/api/v1/accounts/#{account.id}", headers: auth_headers }
 
       it { expect(response).to have_http_status(:no_content) }
     end
 
     context 'when the account does not exist' do
-      before { delete '/api/v1/accounts/00000000-0000-0000-0000-000000000000' }
+      before { delete '/api/v1/accounts/00000000-0000-0000-0000-000000000000', headers: auth_headers }
 
       it { expect(response).to have_http_status(:not_found) }
       it { expect(response.parsed_body).to have_key('error') }

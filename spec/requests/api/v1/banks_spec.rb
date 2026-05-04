@@ -1,11 +1,15 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'Api::V1::BanksController', type: :request do
+  include_context 'with authenticated user'
+
   describe 'GET /api/v1/banks' do
     context 'when there are records' do
       before do
         create(:bank)
-        get '/api/v1/banks'
+        get '/api/v1/banks', headers: auth_headers
       end
 
       it { expect(response).to have_http_status(:ok) }
@@ -13,7 +17,7 @@ RSpec.describe 'Api::V1::BanksController', type: :request do
     end
 
     context 'when there are no records' do
-      before { get '/api/v1/banks' }
+      before { get '/api/v1/banks', headers: auth_headers }
 
       it { expect(response).to have_http_status(:ok) }
       it { expect(response.parsed_body).to be_empty }
@@ -24,14 +28,14 @@ RSpec.describe 'Api::V1::BanksController', type: :request do
     context 'when the bank exists' do
       let!(:bank) { create(:bank) }
 
-      before { get "/api/v1/banks/#{bank.id}" }
+      before { get "/api/v1/banks/#{bank.id}", headers: auth_headers }
 
       it { expect(response).to have_http_status(:ok) }
       it { expect(response.parsed_body).to have_key('id') }
     end
 
     context 'when the bank does not exist' do
-      before { get '/api/v1/banks/00000000-0000-0000-0000-000000000000' }
+      before { get '/api/v1/banks/00000000-0000-0000-0000-000000000000', headers: auth_headers }
 
       it { expect(response).to have_http_status(:not_found) }
       it { expect(response.parsed_body).to have_key('error') }
@@ -43,7 +47,7 @@ RSpec.describe 'Api::V1::BanksController', type: :request do
       let(:bank) { build(:bank) }
       let(:params) { { bank: { name: bank.name, code: bank.code } } }
 
-      before { post '/api/v1/banks', params: params, as: :json }
+      before { post '/api/v1/banks', params: params, headers: auth_headers, as: :json }
 
       it { expect(response).to have_http_status(:created) }
       it { expect(response.parsed_body).to have_key('id') }
@@ -52,7 +56,7 @@ RSpec.describe 'Api::V1::BanksController', type: :request do
     context 'with invalid params' do
       let(:params) { { bank: { name: nil, code: '001' } } }
 
-      before { post '/api/v1/banks', params: params, as: :json }
+      before { post '/api/v1/banks', params: params, headers: auth_headers, as: :json }
 
       it { expect(response).to have_http_status(:unprocessable_content) }
       it { expect(response.parsed_body).to have_key('errors') }
@@ -64,7 +68,7 @@ RSpec.describe 'Api::V1::BanksController', type: :request do
       let!(:bank) { create(:bank) }
       let(:params) { { bank: { name: 'Updated Bank' } } }
 
-      before { patch "/api/v1/banks/#{bank.id}", params: params, as: :json }
+      before { patch "/api/v1/banks/#{bank.id}", params: params, headers: auth_headers, as: :json }
 
       it { expect(response).to have_http_status(:ok) }
       it { expect(response.parsed_body['name']).to eq('Updated Bank') }
@@ -74,7 +78,7 @@ RSpec.describe 'Api::V1::BanksController', type: :request do
       let!(:bank) { create(:bank) }
       let(:params) { { bank: { name: nil } } }
 
-      before { patch "/api/v1/banks/#{bank.id}", params: params, as: :json }
+      before { patch "/api/v1/banks/#{bank.id}", params: params, headers: auth_headers, as: :json }
 
       it { expect(response).to have_http_status(:unprocessable_content) }
       it { expect(response.parsed_body).to have_key('errors') }
@@ -84,7 +88,8 @@ RSpec.describe 'Api::V1::BanksController', type: :request do
       let(:params) { { bank: { name: 'Updated Bank' } } }
 
       before do
-        patch '/api/v1/banks/00000000-0000-0000-0000-000000000000', params: params, as: :json
+        patch '/api/v1/banks/00000000-0000-0000-0000-000000000000',
+              params: params, headers: auth_headers, as: :json
       end
 
       it { expect(response).to have_http_status(:not_found) }
@@ -96,13 +101,13 @@ RSpec.describe 'Api::V1::BanksController', type: :request do
     context 'when the bank exists' do
       let!(:bank) { create(:bank) }
 
-      before { delete "/api/v1/banks/#{bank.id}" }
+      before { delete "/api/v1/banks/#{bank.id}", headers: auth_headers }
 
       it { expect(response).to have_http_status(:no_content) }
     end
 
     context 'when the bank does not exist' do
-      before { delete '/api/v1/banks/00000000-0000-0000-0000-000000000000' }
+      before { delete '/api/v1/banks/00000000-0000-0000-0000-000000000000', headers: auth_headers }
 
       it { expect(response).to have_http_status(:not_found) }
       it { expect(response.parsed_body).to have_key('error') }

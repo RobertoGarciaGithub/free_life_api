@@ -44,8 +44,8 @@ module Api
       end
 
       def transaction_params
-        params.expect(transaction: %i[amount description transactions_type status transactable_type
-                                      transactable_id target_type target_id user_id])
+        params.expect(transaction: %i[amount description transactions_type status fitid
+                                      transactable_type transactable_id target_type target_id user_id])
       end
     end
   end

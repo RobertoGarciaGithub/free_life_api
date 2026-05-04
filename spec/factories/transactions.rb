@@ -3,10 +3,11 @@ FactoryBot.define do
     transactable factory: %i[account]
     user
 
-    amount_cents  { Faker::Number.between(from: 1_00, to: 10_000_00) }
-    description   { Faker::Lorem.sentence }
+    amount_cents      { Faker::Number.between(from: 1_00, to: 10_000_00) }
+    description       { Faker::Lorem.sentence }
     transactions_type { :debit }
     status            { :pending }
+    sequence(:fitid)  { |n| "FITID#{n}#{SecureRandom.hex(4)}" }
 
     trait :credit do
       transactions_type { :credit }

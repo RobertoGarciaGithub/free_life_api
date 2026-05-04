@@ -1,11 +1,15 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'Api::V1::TransactionsController', type: :request do
+  include_context 'with authenticated user'
+
   describe 'GET /api/v1/transactions' do
     context 'when there are records' do
       before do
         create(:transaction)
-        get '/api/v1/transactions'
+        get '/api/v1/transactions', headers: auth_headers
       end
 
       it { expect(response).to have_http_status(:ok) }
@@ -13,7 +17,7 @@ RSpec.describe 'Api::V1::TransactionsController', type: :request do
     end
 
     context 'when there are no records' do
-      before { get '/api/v1/transactions' }
+      before { get '/api/v1/transactions', headers: auth_headers }
 
       it { expect(response).to have_http_status(:ok) }
       it { expect(response.parsed_body).to be_empty }
@@ -24,14 +28,14 @@ RSpec.describe 'Api::V1::TransactionsController', type: :request do
     context 'when the transaction exists' do
       let!(:transaction) { create(:transaction) }
 
-      before { get "/api/v1/transactions/#{transaction.id}" }
+      before { get "/api/v1/transactions/#{transaction.id}", headers: auth_headers }
 
       it { expect(response).to have_http_status(:ok) }
       it { expect(response.parsed_body).to have_key('id') }
     end
 
     context 'when the transaction does not exist' do
-      before { get '/api/v1/transactions/00000000-0000-0000-0000-000000000000' }
+      before { get '/api/v1/transactions/00000000-0000-0000-0000-000000000000', headers: auth_headers }
 
       it { expect(response).to have_http_status(:not_found) }
       it { expect(response.parsed_body).to have_key('error') }
@@ -49,6 +53,7 @@ RSpec.describe 'Api::V1::TransactionsController', type: :request do
             description: 'Pagamento',
             transactions_type: 'debit',
             status: 'pending',
+            fitid: "FITID#{SecureRandom.hex(6)}",
             transactable_type: 'Account',
             transactable_id: account.id,
             user_id: user.id
@@ -56,7 +61,7 @@ RSpec.describe 'Api::V1::TransactionsController', type: :request do
         }
       end
 
-      before { post '/api/v1/transactions', params: params, as: :json }
+      before { post '/api/v1/transactions', params: params, headers: auth_headers, as: :json }
 
       it { expect(response).to have_http_status(:created) }
       it { expect(response.parsed_body).to have_key('id') }
@@ -79,7 +84,7 @@ RSpec.describe 'Api::V1::TransactionsController', type: :request do
         }
       end
 
-      before { post '/api/v1/transactions', params: params, as: :json }
+      before { post '/api/v1/transactions', params: params, headers: auth_headers, as: :json }
 
       it { expect(response).to have_http_status(:unprocessable_content) }
       it { expect(response.parsed_body).to have_key('errors') }
@@ -91,7 +96,7 @@ RSpec.describe 'Api::V1::TransactionsController', type: :request do
       let!(:transaction) { create(:transaction) }
       let(:params) { { transaction: { description: 'Updated Description', status: 'completed' } } }
 
-      before { patch "/api/v1/transactions/#{transaction.id}", params: params, as: :json }
+      before { patch "/api/v1/transactions/#{transaction.id}", params: params, headers: auth_headers, as: :json }
 
       it { expect(response).to have_http_status(:ok) }
       it { expect(response.parsed_body['description']).to eq('Updated Description') }
@@ -101,7 +106,7 @@ RSpec.describe 'Api::V1::TransactionsController', type: :request do
       let!(:transaction) { create(:transaction) }
       let(:params) { { transaction: { description: nil } } }
 
-      before { patch "/api/v1/transactions/#{transaction.id}", params: params, as: :json }
+      before { patch "/api/v1/transactions/#{transaction.id}", params: params, headers: auth_headers, as: :json }
 
       it { expect(response).to have_http_status(:unprocessable_content) }
       it { expect(response.parsed_body).to have_key('errors') }
@@ -111,7 +116,8 @@ RSpec.describe 'Api::V1::TransactionsController', type: :request do
       let(:params) { { transaction: { description: 'Updated Description' } } }
 
       before do
-        patch '/api/v1/transactions/00000000-0000-0000-0000-000000000000', params: params, as: :json
+        patch '/api/v1/transactions/00000000-0000-0000-0000-000000000000',
+              params: params, headers: auth_headers, as: :json
       end
 
       it { expect(response).to have_http_status(:not_found) }
@@ -123,13 +129,13 @@ RSpec.describe 'Api::V1::TransactionsController', type: :request do
     context 'when the transaction exists' do
       let!(:transaction) { create(:transaction) }
 
-      before { delete "/api/v1/transactions/#{transaction.id}" }
+      before { delete "/api/v1/transactions/#{transaction.id}", headers: auth_headers }
 
       it { expect(response).to have_http_status(:no_content) }
     end
 
     context 'when the transaction does not exist' do
-      before { delete '/api/v1/transactions/00000000-0000-0000-0000-000000000000' }
+      before { delete '/api/v1/transactions/00000000-0000-0000-0000-000000000000', headers: auth_headers }
 
       it { expect(response).to have_http_status(:not_found) }
       it { expect(response.parsed_body).to have_key('error') }

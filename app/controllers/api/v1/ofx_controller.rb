@@ -3,7 +3,6 @@ module Api
     class OfxController < ApplicationController
       def create
         ofx_file = params[:ofx_file]
-        binding.b
 
         if ofx_file.include?('.ofx')
           result = OfxParserService.new(File.open(ofx_file)).call

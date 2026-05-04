@@ -7,7 +7,7 @@ class Category < ApplicationRecord
 
   monetize :budget_cents
 
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true
   validates :category_type, presence: true
   validates :budget, numericality: { greater_than_or_equal_to: 0 }
   validates :icon, presence: true

@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+gem 'devise'
+gem 'devise-jwt'
 gem 'money-rails'
 gem 'pg', '~> 1.1'
 gem 'puma', '>= 5.0'
@@ -7,6 +9,7 @@ gem 'rails', '~> 8.1.3'
 gem 'tzinfo-data', platforms: %i[windows jruby]
 
 gem 'bootsnap', require: false
+gem 'jwt', '~> 3.1'
 gem 'nkf'
 gem 'ofx', '~> 0.3.8'
 gem 'solid_cable'

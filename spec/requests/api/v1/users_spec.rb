@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'Api::V1::UsersController', type: :request do
@@ -5,8 +7,16 @@ RSpec.describe 'Api::V1::UsersController', type: :request do
     context 'with valid params' do
       let(:user) { build(:user) }
       let(:params) do
-        { user: { first_name: user.first_name, last_name: user.last_name, email: user.email,
-                  document: user.document } }
+        {
+          user: {
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            document: user.document,
+            password: 'password123',
+            password_confirmation: 'password123'
+          }
+        }
       end
 
       before { post '/api/v1/users', params: params, as: :json }
@@ -18,8 +28,16 @@ RSpec.describe 'Api::V1::UsersController', type: :request do
     context 'with invalid params (email nil)' do
       let(:user) { build(:user) }
       let(:params) do
-        { user: { first_name: user.first_name, last_name: user.last_name, email: nil,
-                  document: user.document } }
+        {
+          user: {
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: nil,
+            document: user.document,
+            password: 'password123',
+            password_confirmation: 'password123'
+          }
+        }
       end
 
       before { post '/api/v1/users', params: params, as: :json }
