@@ -8,10 +8,18 @@ class User < ApplicationRecord
          :validatable,
          :jwt_authenticatable, jwt_revocation_strategy: self
 
+  before_create :set_jti
+
   has_many :accounts, as: :accountable, dependent: :destroy
 
   validates :first_name, presence: true
   validates :last_name,  presence: true
   validates :document,   presence: true, uniqueness: true
   # :email and :password validations are handled by devise's :validatable module
+
+  private
+
+  def set_jti
+    self.jti = SecureRandom.uuid
+  end
 end
