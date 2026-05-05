@@ -8,6 +8,14 @@
 #
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
+class CustomFailureApp < Devise::FailureApp
+  def respond
+    self.status        = :unauthorized
+    self.content_type  = 'application/json'
+    self.response_body = { errors: { authentication: [i18n_message] } }.to_json
+  end
+end
+
 Devise.setup do |config|
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
@@ -280,10 +288,9 @@ Devise.setup do |config|
   # If you want to use other strategies, that are not supported by Devise, or
   # change the failure app, you can configure them inside the config.warden block.
   #
-  # config.warden do |warden_config|
-  #   warden_config.intercept_401 = false
-  #   warden_config.default_strategies(scope: :user).unshift :some_external_strategy
-  # end
+  config.warden do |warden_config|
+    warden_config.failure_app = CustomFailureApp
+  end
 
   # ==> Mountable engine configurations
   # When using Devise inside an engine, let's call it `MyEngine`, and this engine

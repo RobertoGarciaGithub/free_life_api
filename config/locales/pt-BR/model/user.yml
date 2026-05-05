@@ -1,0 +1,15 @@
+pt-BR:
+  activerecord:
+    errors:
+      messages:
+        taken: "já está em uso"
+        blank: "não pode ficar em branco"
+    models:
+      user: "Usuário"
+    attributes:
+      user:
+        name: "Nome"
+        email: "E-mail"
+        document: "Documento"
+        password: "Senha"
+        password_confirmation: "Confirmação de senha"

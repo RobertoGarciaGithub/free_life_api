@@ -8,6 +8,8 @@ module Api
 
         skip_before_action :authenticate_user!, only: [:create]
 
+        def create; end
+
         private
 
         def respond_with(resource, _opts = {})
@@ -21,7 +23,8 @@ module Api
               }
             }, status: :created
           else
-            render json: { errors: resource.errors.full_messages }, status: :unprocessable_content
+            render json: { errors: resource.errors.to_hash(full_messages: true) },
+                   status: :unprocessable_content
           end
         end
 
