@@ -6,9 +6,11 @@ module Api
       class SessionsController < Devise::SessionsController
         respond_to :json
 
-        skip_before_action :authenticate_user!, only: [:create]
+        skip_before_action :authenticate_user!, only: :create
 
-        def create; end
+        def create
+          super
+        end
 
         private
 
