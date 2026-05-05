@@ -14,10 +14,10 @@ module Api
           render json: {
             token: request.env['warden-jwt_auth.token'],
             user: {
-              id:         resource.id,
-              email:      resource.email,
+              id: resource.id,
+              email: resource.email,
               first_name: resource.first_name,
-              last_name:  resource.last_name
+              last_name: resource.last_name
             }
           }, status: :ok
         end

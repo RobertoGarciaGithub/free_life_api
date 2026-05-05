@@ -35,7 +35,9 @@ RSpec.describe 'Api::V1::TransactionsController', type: :request do
     end
 
     context 'when the transaction does not exist' do
-      before { get '/api/v1/transactions/00000000-0000-0000-0000-000000000000', headers: auth_headers }
+      before do
+        get '/api/v1/transactions/00000000-0000-0000-0000-000000000000', headers: auth_headers
+      end
 
       it { expect(response).to have_http_status(:not_found) }
       it { expect(response.parsed_body).to have_key('error') }
@@ -96,7 +98,10 @@ RSpec.describe 'Api::V1::TransactionsController', type: :request do
       let!(:transaction) { create(:transaction) }
       let(:params) { { transaction: { description: 'Updated Description', status: 'completed' } } }
 
-      before { patch "/api/v1/transactions/#{transaction.id}", params: params, headers: auth_headers, as: :json }
+      before do
+        patch "/api/v1/transactions/#{transaction.id}", params: params, headers: auth_headers,
+                                                        as: :json
+      end
 
       it { expect(response).to have_http_status(:ok) }
       it { expect(response.parsed_body['description']).to eq('Updated Description') }
@@ -106,7 +111,10 @@ RSpec.describe 'Api::V1::TransactionsController', type: :request do
       let!(:transaction) { create(:transaction) }
       let(:params) { { transaction: { description: nil } } }
 
-      before { patch "/api/v1/transactions/#{transaction.id}", params: params, headers: auth_headers, as: :json }
+      before do
+        patch "/api/v1/transactions/#{transaction.id}", params: params, headers: auth_headers,
+                                                        as: :json
+      end
 
       it { expect(response).to have_http_status(:unprocessable_content) }
       it { expect(response.parsed_body).to have_key('errors') }
@@ -135,7 +143,9 @@ RSpec.describe 'Api::V1::TransactionsController', type: :request do
     end
 
     context 'when the transaction does not exist' do
-      before { delete '/api/v1/transactions/00000000-0000-0000-0000-000000000000', headers: auth_headers }
+      before do
+        delete '/api/v1/transactions/00000000-0000-0000-0000-000000000000', headers: auth_headers
+      end
 
       it { expect(response).to have_http_status(:not_found) }
       it { expect(response.parsed_body).to have_key('error') }

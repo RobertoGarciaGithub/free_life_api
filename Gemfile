@@ -1,20 +1,20 @@
 source 'https://rubygems.org'
 
+gem 'bootsnap', require: false
 gem 'devise'
 gem 'devise-jwt'
+gem 'jwt', '~> 3.1'
 gem 'money-rails'
+gem 'nkf'
+gem 'ofx', '~> 0.3.8'
 gem 'pg', '~> 1.1'
 gem 'puma', '>= 5.0'
 gem 'rails', '~> 8.1.3'
-gem 'tzinfo-data', platforms: %i[windows jruby]
-
-gem 'bootsnap', require: false
-gem 'jwt', '~> 3.1'
-gem 'nkf'
-gem 'ofx', '~> 0.3.8'
 gem 'solid_cable'
 gem 'solid_cache'
 gem 'solid_queue'
+gem 'turbo-rails'
+gem 'tzinfo-data', platforms: %i[windows jruby]
 
 gem 'kamal', require: false
 gem 'thruster', require: false

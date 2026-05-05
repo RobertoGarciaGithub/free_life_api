@@ -35,7 +35,9 @@ RSpec.describe 'Api::V1::EnterprisesController', type: :request do
     end
 
     context 'when the enterprise does not exist' do
-      before { get '/api/v1/enterprises/00000000-0000-0000-0000-000000000000', headers: auth_headers }
+      before do
+        get '/api/v1/enterprises/00000000-0000-0000-0000-000000000000', headers: auth_headers
+      end
 
       it { expect(response).to have_http_status(:not_found) }
       it { expect(response.parsed_body).to have_key('error') }
@@ -71,7 +73,10 @@ RSpec.describe 'Api::V1::EnterprisesController', type: :request do
       let!(:enterprise) { create(:enterprise) }
       let(:params) { { enterprise: { legal_name: 'Updated LTDA' } } }
 
-      before { patch "/api/v1/enterprises/#{enterprise.id}", params: params, headers: auth_headers, as: :json }
+      before do
+        patch "/api/v1/enterprises/#{enterprise.id}", params: params, headers: auth_headers,
+                                                      as: :json
+      end
 
       it { expect(response).to have_http_status(:ok) }
       it { expect(response.parsed_body['legal_name']).to eq('Updated LTDA') }
@@ -81,7 +86,10 @@ RSpec.describe 'Api::V1::EnterprisesController', type: :request do
       let!(:enterprise) { create(:enterprise) }
       let(:params) { { enterprise: { legal_name: nil } } }
 
-      before { patch "/api/v1/enterprises/#{enterprise.id}", params: params, headers: auth_headers, as: :json }
+      before do
+        patch "/api/v1/enterprises/#{enterprise.id}", params: params, headers: auth_headers,
+                                                      as: :json
+      end
 
       it { expect(response).to have_http_status(:unprocessable_content) }
       it { expect(response.parsed_body).to have_key('errors') }
@@ -110,7 +118,9 @@ RSpec.describe 'Api::V1::EnterprisesController', type: :request do
     end
 
     context 'when the enterprise does not exist' do
-      before { delete '/api/v1/enterprises/00000000-0000-0000-0000-000000000000', headers: auth_headers }
+      before do
+        delete '/api/v1/enterprises/00000000-0000-0000-0000-000000000000', headers: auth_headers
+      end
 
       it { expect(response).to have_http_status(:not_found) }
       it { expect(response.parsed_body).to have_key('error') }

@@ -14,25 +14,25 @@ module Api
           if resource.persisted?
             render json: {
               user: {
-                id:         resource.id,
-                email:      resource.email,
+                id: resource.id,
+                email: resource.email,
                 first_name: resource.first_name,
-                last_name:  resource.last_name
+                last_name: resource.last_name
               }
             }, status: :created
           else
-            render json: { errors: resource.errors.full_messages }, status: :unprocessable_entity
+            render json: { errors: resource.errors.full_messages }, status: :unprocessable_content
           end
         end
 
         def sign_up_params
-          params.require(:user).permit(
-            :email,
-            :password,
-            :password_confirmation,
-            :first_name,
-            :last_name,
-            :document
+          params.expect(
+            user: %i[email
+                     password
+                     password_confirmation
+                     first_name
+                     last_name
+                     document]
           )
         end
       end
