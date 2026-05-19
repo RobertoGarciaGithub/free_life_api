@@ -38,7 +38,7 @@ module Api
       private
 
       def set_enterprise
-        @enterprise = Enterprise.find(params[:id])
+        @enterprise = Enterprise.find(params.expect(:id))
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Enterprise not found' }, status: :not_found
       end

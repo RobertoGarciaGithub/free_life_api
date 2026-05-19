@@ -38,7 +38,7 @@ module Api
       private
 
       def set_bank
-        @bank = Bank.find(params[:id])
+        @bank = Bank.find(params.expect(:id))
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Bank not found' }, status: :not_found
       end

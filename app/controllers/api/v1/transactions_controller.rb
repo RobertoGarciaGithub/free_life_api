@@ -38,7 +38,7 @@ module Api
       private
 
       def set_transaction
-        @transaction = Transaction.find(params[:id])
+        @transaction = Transaction.find(params.expect(:id))
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Transaction not found' }, status: :not_found
       end
