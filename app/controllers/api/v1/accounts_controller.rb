@@ -38,7 +38,7 @@ module Api
       private
 
       def set_account
-        @account = Account.find(params[:id])
+        @account = Account.find(params.expect(:id))
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Account not found' }, status: :not_found
       end

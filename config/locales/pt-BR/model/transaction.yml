@@ -1,0 +1,24 @@
+pt-BR:
+  activerecord:
+    errors:
+      models:
+        transaction:
+          attributes:
+            amount:
+              greater_than: "deve ser maior que 0"
+              not_a_number: "deve ser um número"
+              blank: "não pode ficar em branco"
+            description:
+              blank: "não pode ficar em branco"
+            date:
+              blank: "não pode ficar em branco"
+            messages:
+              taken: "já está em uso"
+              blank: "não pode ficar em branco"
+    models:
+      transaction: "Transação"
+    attributes:
+      transaction:
+        amount: "Valor"
+        description: "Descrição"
+        date: "Data"
