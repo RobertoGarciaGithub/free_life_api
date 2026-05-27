@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'bootsnap', require: false
 gem 'devise'
 gem 'devise-jwt'
-gem 'jwt', '~> 3.1'
+gem 'jwt', '~> 3.2'
 gem 'money-rails'
 gem 'nkf'
 gem 'ofx-parser'
